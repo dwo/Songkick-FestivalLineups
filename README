@@ -1,0 +1,1 @@
+Paste newline separated artist names into the text area, choose to append to or overwrite the existing lineup, then click add artists. Click done to remove the form elements injected by the userscript so that you can add/update the festival instance without errors.
