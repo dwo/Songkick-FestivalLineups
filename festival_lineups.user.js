@@ -38,7 +38,6 @@ var InputParser = {
         }
       }
     }
-    
     return array;
   }
 };
@@ -52,7 +51,7 @@ var Lineup = {
   
   injectHTML : function () {
     var artistList  = $('dl#festival-artists'), 
-        html        = $(' <dl id="festival-artists-text-area">\
+        html        = $(' <dl id="festival-lineups-injection">\
                             <dt>\
                               <label>\
                                 Paste the artists all up in here\
@@ -72,12 +71,15 @@ var Lineup = {
                             <dd>\
                               <input id="lineup_submit" class="submit button" type="button"\
                                      value="Add artists" />\
+                              <input id="done_submit" class="submit button" type="button"\
+                                     value="Done" />\
                             </dd>\
                           </dl>');
         
     
     artistList.before(html);
     $('#lineup_submit').click(this.submitHandler);
+    $('#done_submit').click(this.doneHandler);
   },
   
   submitHandler : function () {
@@ -121,6 +123,10 @@ var Lineup = {
       }
       break;
     }
+  },
+  
+  doneHandler : function () {
+    $("#festival-lineups-injection").html('');
   }
 };
 
