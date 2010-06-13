@@ -2,6 +2,8 @@
 // @name           Festival Lineups
 // @namespace      http://www.songkick.com
 // @description    add lineups easily
+// @include       http://*.songkick.*/festival_instances/new
+// @include       http://*.songkick.*/festivals/*/id/*/edit
 // ==/UserScript==
 
 var InputParser = {
@@ -58,7 +60,7 @@ var Lineup = {
                             </dt>\
                             <dd>\
                               <textarea id="lineup_paste_area"\
-                                        style="width: 442px; height: 300px;" />\
+                                        style="width: 442px; height: 150px;" />\
                             </dd>\
                             <dt>Options</dt>\
                             <dd>\
