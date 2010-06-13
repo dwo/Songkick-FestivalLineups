@@ -4,12 +4,12 @@
 // @description    add lineups easily
 // ==/UserScript==
 
-InputParser = {
-  init : function(textArea) {
+var InputParser = {
+  init : function (textArea) {
     this._textArea = textArea;
   },
   
-  toArray : function(options) {
+  toArray : function (options) {
     var i, 
         array = this._textArea.val().split("\n");
     
@@ -20,35 +20,35 @@ InputParser = {
       for (i = 0; i < array.length; i = i + 1) {    
         //strip numbering
         if (options.stripNumbers) {
-            array[i] = array[i].stripNumbers();
+          array[i] = array[i].stripNumbers();
         }
         
         //remove track if blank
         if (array[i].length === 0) {
-            array.splice(i, 1);
-            i = i - 1;
-            continue;
+          array.splice(i, 1);
+          i = i - 1;
+          continue;
         }
         
         //title casing
         if (options.titleCase) {
-            array[i] = array[i].toTitleCase();
+          array[i] = array[i].toTitleCase();
         }
       }
     }
     
     return array;
   }
-}
+};
 
-Lineup = {
+var Lineup = {
   
-  init : function() {   
+  init : function () {   
     this.injectHTML();
     InputParser.init($('#lineup_paste_area'));
   },
   
-  injectHTML : function() {
+  injectHTML : function () {
     var artistList  = $('dl#festival-artists'), 
         html        = $(' <dl id="festival-artists-text-area">\
                             <dt>\
@@ -68,7 +68,7 @@ Lineup = {
                                Overwrite <br />\
                             </dd>\
                             <dd>\
-                              <input id="lineup_submit" class="submit button" type="button" \
+                              <input id="lineup_submit" class="submit button" type="button"\
                                      value="Add artists" />\
                             </dd>\
                           </dl>');
@@ -78,49 +78,49 @@ Lineup = {
     $('#lineup_submit').click(this.submitHandler);
   },
   
-  submitHandler : function() {
+  submitHandler : function () {
     var userArtists     = InputParser.toArray({}),
         songkickArtists = $("dd.artist input"),
         inputStyle      = $("input[name='inputStyle']:checked").val(),
-        i, takenSpaces = 0;
+        i, takenSpaces = 0, availableSpaces = 0;
     
-    switch(inputStyle) {
-      case 'append':
-        for(i = 0; i < songkickArtists.length; i++) {
-          if($(songkickArtists[i]).val() !== ''){
-            takenSpaces += 1;
-          }
+    switch (inputStyle) {
+    case 'append':
+      for (i = 0; i < songkickArtists.length; i = i + 1) {
+        if ($(songkickArtists[i]).val() !== '') {
+          takenSpaces += 1;
         }
-        
-        availableSpaces = songkickArtists.length - takenSpaces;
-        while(availableSpaces < userArtists.length){
-          $("#more_headliners").trigger('click');
-          songkickArtists = $("dd.artist input");
-          availableSpaces += 15;
-        }
-        
-        for(i = 0; i < userArtists.length; i++) {
-          $(songkickArtists[takenSpaces + i]).val(userArtists[i]);
-        }
+      }
+      
+      availableSpaces = songkickArtists.length - takenSpaces;
+      while (availableSpaces < userArtists.length) {
+        $("#more_headliners").trigger('click');
+        songkickArtists = $("dd.artist input");
+        availableSpaces += 15;
+      }
+      
+      for (i = 0; i < userArtists.length; i = i + 1) {
+        $(songkickArtists[takenSpaces + i]).val(userArtists[i]);
+      }
       break;
-      case 'overwrite':
-        //keep adding inputs until your artists fit!
-        while(songkickArtists.length < userArtists.length){
-          $("#more_headliners").trigger('click');
-          songkickArtists = $("dd.artist input");
+    case 'overwrite':
+      //keep adding inputs until your artists fit!
+      while (songkickArtists.length < userArtists.length) {
+        $("#more_headliners").trigger('click');
+        songkickArtists = $("dd.artist input");
+      }
+      
+      for (i = 0; i < songkickArtists.length; i = i + 1) {
+        if (i < userArtists.length) {
+          $(songkickArtists[i]).val(userArtists[i]);
+        } else {
+          $(songkickArtists[i]).val('');
         }
-        
-        for(i = 0; i < songkickArtists.length; i++) {
-          if (i < userArtists.length) {
-            $(songkickArtists[i]).val(userArtists[i]);
-          } else {
-            $(songkickArtists[i]).val('');
-          }
-        }
+      }
       break;
     }
   }
-}
+};
 
 /* To Title Case 1.1.1
  * David Gouch <http://individed.com>
@@ -131,20 +131,20 @@ Lineup = {
  * http://daringfireball.net/2008/05/title_case
  */    
 String.prototype.toTitleCase = function () {
-    return this.replace(/([\w&`'‘’"“.@:\/\{\(\[<>_]+-? *)/g, function (match, p1, index, title) {
-        if (index > 0 && title.charAt(index - 2) !== ":" &&
-        	match.search(/^(a(nd?|s|t)?|b(ut|y)|en|for|i[fn]|o[fnr]|t(he|o)|vs?\.?|via)[ \-]/i) > -1) {
-            return match.toLowerCase();
-        }
-        if (title.substring(index - 1, index + 1).search(/['"_{(\[]/) > -1) {
-            return match.charAt(0) + match.charAt(1).toUpperCase() + match.substr(2);
-        }
-        if (match.substr(1).search(/[A-Z]+|&|[\w]+[._][\w]+/) > -1 || 
-        	title.substring(index - 1, index + 1).search(/[\])}]/) > -1) {
-            return match;
-        }
-        return match.charAt(0).toUpperCase() + match.substr(1);
-    });
+  return this.replace(/([\w&`'‘’"“.@:\/\{\(\[<>_]+-? *)/g, function (match, p1, index, title) {
+    if (index > 0 && title.charAt(index - 2) !== ":" &&
+      match.search(/^(a(nd?|s|t)?|b(ut|y)|en|for|i[fn]|o[fnr]|t(he|o)|vs?\.?|via)[ \-]/i) > -1) {
+      return match.toLowerCase();
+    }
+    if (title.substring(index - 1, index + 1).search(/['"_{(\[]/) > -1) {
+      return match.charAt(0) + match.charAt(1).toUpperCase() + match.substr(2);
+    }
+    if (match.substr(1).search(/[A-Z]+|&|[\w]+[._][\w]+/) > -1 || 
+      title.substring(index - 1, index + 1).search(/[\])}]/) > -1) {
+      return match;
+    }
+    return match.charAt(0).toUpperCase() + match.substr(1);
+  });
 };
 
 /**
@@ -155,7 +155,7 @@ String.prototype.toTitleCase = function () {
 * @return   string
 */
 String.prototype.stripNumbers = function () {
-    return this.replace(/^(\s*[#\d\.:\)]*\s*)/i, '');
+  return this.replace(/^(\s*[#\d\.:\)]*\s*)/i, '');
 };
 
 /**
