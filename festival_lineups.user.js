@@ -2,8 +2,8 @@
 // @name           Festival Lineups
 // @namespace      http://www.songkick.com
 // @description    add lineups easily
-// @include       http://*.songkick.*/festival_instances/new
-// @include       http://*.songkick.*/festivals/*/id/*/edit
+// @include        http://*.songkick.*/festival_instances/new*
+// @include        http://*.songkick.*/festivals/*/id/*/edit*
 // ==/UserScript==
 
 var InputParser = {
@@ -39,6 +39,10 @@ var InputParser = {
       }
     }
     return array;
+  },
+  
+  clear : function () {
+    this._textArea.val('');
   }
 };
 
@@ -123,6 +127,7 @@ var Lineup = {
       }
       break;
     }
+    InputParser.clear();
   },
   
   doneHandler : function () {
