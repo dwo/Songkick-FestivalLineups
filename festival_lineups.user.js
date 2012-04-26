@@ -1,4 +1,3 @@
-
 // ==UserScript==
 // @name           Festival Lineups
 // @namespace      http://www.songkick.com
@@ -55,7 +54,7 @@ var Lineup = {
   },
 
   injectHTML : function () {
-    var artistList  = $('ul.artists'),
+    var artistList  = $($('div.form-field')[1]),
         html        = $('   <label for="lineup_paste_area">\
                               Paste the artists all up in here\
                             </label>\
@@ -63,22 +62,23 @@ var Lineup = {
                               <textarea id="lineup_paste_area"\
                                         style="width: 235px; height: 150px;" />\
                             </li></ul>\
-                            <label for="lineup_pase_options">Options</dt>\
-                            <ul>\
-                              <li><input type="radio" name="inputStyle" value="append" checked />\
-                               Append </li>\
-                              <li><input type="radio" name="inputStyle" value="overwrite" />\
-                               Overwrite </li>\
-                            </ul>\
-                            <ul>\
-                              <li><input id="lineup_submit" class="submit button" type="button"\
-                                     value="Add artists" /></li>\
-                              <li><input id="done_submit" class="submit button" type="button"\
-                                     value="Done" /></li>\
-                            </ul>\
+                            <p class="options">\
+                              <input id="lineup_append_option" type="radio" name="inputStyle" value="append" checked />\
+                              <label for="lineup_append_option">Append</label> \
+                            </p>\
+                            <p class="options">\
+                              <input id="lineup_owrite_option" type="radio" name="inputStyle" value="overwrite" />\
+                              <label for="lineup_owrite_option">Overwrite</label> \
+                            </p>\
+                            <p class="form-footer">\
+                            <input id="lineup_submit" class="submit button" type="button"\
+                               value="Add artists" />\
+                            <input id="done_submit" class="submit button" type="button"\
+                                   value="Done" />\
+                            </p>\
                          ');
 
-    artistList.before(html);
+    artistList.prepend(html);
     $('#lineup_submit').click(this.submitHandler);
     $('#done_submit').click(this.doneHandler);
   },
@@ -180,4 +180,3 @@ function GM_wait() {
   }
 }
 var GM_start = new GM_wait();
-
