@@ -10,28 +10,28 @@ var InputParser = {
   init : function (textArea) {
     this._textArea = textArea;
   },
-  
+
   toArray : function (options) {
-    var i, 
+    var i,
         array = this._textArea.val().split("\n");
-    
+
     if (options === undefined) {
       return array;
     } else {
-      //iterate over parsed tracks    
-      for (i = 0; i < array.length; i = i + 1) {    
+      //iterate over parsed tracks
+      for (i = 0; i < array.length; i = i + 1) {
         //strip numbering
         if (options.stripNumbers) {
           array[i] = array[i].stripNumbers();
         }
-        
+
         //remove track if blank
         if (array[i].length === 0) {
           array.splice(i, 1);
           i = i - 1;
           continue;
         }
-        
+
         //title casing
         if (options.titleCase) {
           array[i] = array[i].toTitleCase();
@@ -40,21 +40,21 @@ var InputParser = {
     }
     return array;
   },
-  
+
   clear : function () {
     this._textArea.val('');
   }
 };
 
 var Lineup = {
-  
-  init : function () {   
+
+  init : function () {
     this.injectHTML();
     InputParser.init($('#lineup_paste_area'));
   },
-  
+
   injectHTML : function () {
-    var artistList  = $('dl#festival-artists'), 
+    var artistList  = $('dl#festival-artists'),
         html        = $(' <dl id="festival-lineups-injection">\
                             <dt>\
                               <label>\
@@ -79,19 +79,19 @@ var Lineup = {
                                      value="Done" />\
                             </dd>\
                           </dl>');
-        
-    
+
+
     artistList.before(html);
     $('#lineup_submit').click(this.submitHandler);
     $('#done_submit').click(this.doneHandler);
   },
-  
+
   submitHandler : function () {
     var userArtists     = InputParser.toArray({}),
         songkickArtists = $("dd.artist input"),
         inputStyle      = $("input[name='inputStyle']:checked").val(),
         i, takenSpaces = 0, availableSpaces = 0;
-    
+
     switch (inputStyle) {
     case 'append':
       for (i = 0; i < songkickArtists.length; i = i + 1) {
@@ -99,14 +99,14 @@ var Lineup = {
           takenSpaces += 1;
         }
       }
-      
+
       availableSpaces = songkickArtists.length - takenSpaces;
       while (availableSpaces < userArtists.length) {
         $("#more_headliners").trigger('click');
         songkickArtists = $("dd.artist input");
         availableSpaces += 15;
       }
-      
+
       for (i = 0; i < userArtists.length; i = i + 1) {
         $(songkickArtists[takenSpaces + i]).val(userArtists[i]);
       }
@@ -117,7 +117,7 @@ var Lineup = {
         $("#more_headliners").trigger('click');
         songkickArtists = $("dd.artist input");
       }
-      
+
       for (i = 0; i < songkickArtists.length; i = i + 1) {
         if (i < userArtists.length) {
           $(songkickArtists[i]).val(userArtists[i]);
@@ -129,7 +129,7 @@ var Lineup = {
     }
     InputParser.clear();
   },
-  
+
   doneHandler : function () {
     $("#festival-lineups-injection").html('');
   }
@@ -140,9 +140,9 @@ var Lineup = {
  * 23 May 2008
  * License: http://individed.com/code/to-title-case/license.txt
  *
- * In response to John Gruber's call for a Javascript version of his script: 
+ * In response to John Gruber's call for a Javascript version of his script:
  * http://daringfireball.net/2008/05/title_case
- */    
+ */
 String.prototype.toTitleCase = function () {
   return this.replace(/([\w&`'‘’"“.@:\/\{\(\[<>_]+-? *)/g, function (match, p1, index, title) {
     if (index > 0 && title.charAt(index - 2) !== ":" &&
@@ -152,7 +152,7 @@ String.prototype.toTitleCase = function () {
     if (title.substring(index - 1, index + 1).search(/['"_{(\[]/) > -1) {
       return match.charAt(0) + match.charAt(1).toUpperCase() + match.substr(2);
     }
-    if (match.substr(1).search(/[A-Z]+|&|[\w]+[._][\w]+/) > -1 || 
+    if (match.substr(1).search(/[A-Z]+|&|[\w]+[._][\w]+/) > -1 ||
       title.substring(index - 1, index + 1).search(/[\])}]/) > -1) {
       return match;
     }
@@ -161,7 +161,7 @@ String.prototype.toTitleCase = function () {
 };
 
 /**
-* Strips several common forms of numbering & whitespace from the 
+* Strips several common forms of numbering & whitespace from the
 * front of a string using a regular expression
 * examples that would be stripped: 1) #2 3. 4: 5
 * @param    string  input_string
@@ -175,11 +175,11 @@ String.prototype.stripNumbers = function () {
 * Recusively checks for jQuery to be loaded.
 */
 function GM_wait() {
-  if (typeof unsafeWindow.jQuery === 'undefined') { 
-    window.setTimeout(GM_wait, 100); 
-  } else { 
+  if (typeof unsafeWindow.jQuery === 'undefined') {
+    window.setTimeout(GM_wait, 100);
+  } else {
     $ = unsafeWindow.jQuery;
-    Lineup.init(); 
+    Lineup.init();
   }
 }
 var GM_start = new GM_wait();
