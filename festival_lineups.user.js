@@ -54,31 +54,29 @@ var Lineup = {
   },
 
   injectHTML : function () {
-    var artistList  = $('dl#festival-artists'),
-        html        = $(' <dl id="festival-lineups-injection">\
-                            <dt>\
-                              <label>\
-                                Paste the artists all up in here\
-                              </label>\
-                            </dt>\
-                            <dd>\
+    var artistList  = $('ul#artists'),
+        html        = $('
+                            <label for="lineup_paste_area">\
+                              Paste the artists all up in here\
+                            </label>\
+                            <ul class="artists"><li>\
                               <textarea id="lineup_paste_area"\
                                         style="width: 442px; height: 150px;" />\
-                            </dd>\
-                            <dt>Options</dt>\
-                            <dd>\
-                              <input type="radio" name="inputStyle" value="append" checked />\
-                               Append <br />\
-                              <input type="radio" name="inputStyle" value="overwrite" />\
-                               Overwrite <br />\
-                            </dd>\
-                            <dd>\
-                              <input id="lineup_submit" class="submit button" type="button"\
-                                     value="Add artists" />\
-                              <input id="done_submit" class="submit button" type="button"\
-                                     value="Done" />\
-                            </dd>\
-                          </dl>');
+                            </li></ul>\
+                            <label for="lineup_pase_options">Options</dt>\
+                            <ul>\
+                              <li><input type="radio" name="inputStyle" value="append" checked />\
+                               Append </li>\
+                              <li><input type="radio" name="inputStyle" value="overwrite" />\
+                               Overwrite </li>\
+                            </ul>\
+                            <ul>\
+                              <li><input id="lineup_submit" class="submit button" type="button"\
+                                     value="Add artists" /></li>\
+                              <li><input id="done_submit" class="submit button" type="button"\
+                                     value="Done" /></li>\
+                            </ul>\
+                         ');
 
 
     artistList.before(html);
