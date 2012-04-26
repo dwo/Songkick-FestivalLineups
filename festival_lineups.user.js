@@ -1,3 +1,4 @@
+
 // ==UserScript==
 // @name           Festival Lineups
 // @namespace      http://www.songkick.com
@@ -54,14 +55,13 @@ var Lineup = {
   },
 
   injectHTML : function () {
-    var artistList  = $('ul#artists'),
-        html        = $('
-                            <label for="lineup_paste_area">\
+    var artistList  = $('ul.artists'),
+        html        = $('   <label for="lineup_paste_area">\
                               Paste the artists all up in here\
                             </label>\
                             <ul class="artists"><li>\
                               <textarea id="lineup_paste_area"\
-                                        style="width: 442px; height: 150px;" />\
+                                        style="width: 235px; height: 150px;" />\
                             </li></ul>\
                             <label for="lineup_pase_options">Options</dt>\
                             <ul>\
@@ -77,7 +77,6 @@ var Lineup = {
                                      value="Done" /></li>\
                             </ul>\
                          ');
-
 
     artistList.before(html);
     $('#lineup_submit').click(this.submitHandler);
@@ -181,3 +180,4 @@ function GM_wait() {
   }
 }
 var GM_start = new GM_wait();
+
