@@ -55,7 +55,8 @@ var Lineup = {
 
   injectHTML : function () {
     var artistList  = $($('div.form-field')[1]),
-        html        = $('   <label for="lineup_paste_area">\
+        html        = $('<div id="injected">\
+                            <label for="lineup_paste_area">\
                               Paste the artists all up in here\
                             </label>\
                             <ul class="artists"><li>\
@@ -76,7 +77,7 @@ var Lineup = {
                             <input id="done_submit" class="submit button" type="button"\
                                    value="Done" />\
                             </p>\
-                         ');
+                         </div>');
 
     artistList.prepend(html);
     $('#lineup_submit').click(this.submitHandler);
@@ -128,7 +129,7 @@ var Lineup = {
   },
 
   doneHandler : function () {
-    $("#festival-lineups-injection").html('');
+    $("#injected").html('');
   }
 };
 
