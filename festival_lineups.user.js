@@ -85,7 +85,7 @@ var Lineup = {
 
   submitHandler : function () {
     var userArtists     = InputParser.toArray({}),
-        songkickArtists = $("dd.artist input"),
+        songkickArtists = $("ul.artists input"),
         inputStyle      = $("input[name='inputStyle']:checked").val(),
         i, takenSpaces = 0, availableSpaces = 0;
 
