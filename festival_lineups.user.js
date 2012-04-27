@@ -6,6 +6,20 @@
 // @include        http://*.songkick.*/festivals/*/id/*/edit*
 // ==/UserScript==
 
+var SongkickDOM = {
+  artistsFormField : function() {
+    return $($('div.form-field')[1]);
+  },
+
+  artistTextInputs : function () {
+    return $("ul.artists input");
+  },
+
+  addMoreButton : function() {
+    return $("p.form-footer input[value='Add more…']");
+  }
+}
+
 var InputParser = {
   init : function (textArea) {
     this._textArea = textArea;
@@ -18,14 +32,14 @@ var InputParser = {
     if (options === undefined) {
       return array;
     } else {
-      //iterate over parsed tracks
+      //iterate over array of lines
       for (i = 0; i < array.length; i = i + 1) {
         //strip numbering
         if (options.stripNumbers) {
           array[i] = array[i].stripNumbers();
         }
 
-        //remove track if blank
+        //remove line if blank
         if (array[i].length === 0) {
           array.splice(i, 1);
           i = i - 1;
@@ -54,8 +68,7 @@ var Lineup = {
   },
 
   injectHTML : function () {
-    var artistList  = $($('div.form-field')[1]),
-        html        = $('<div id="injected">\
+    var html        = $('<div id="injected">\
                             <label for="lineup_paste_area">\
                               Paste the artists all up in here\
                             </label>\
@@ -64,12 +77,12 @@ var Lineup = {
                                         style="width: 235px; height: 150px;" />\
                             </li></ul>\
                             <p class="options">\
-                              <input id="lineup_append_option" type="radio" name="inputStyle" value="append" checked />\
-                              <label for="lineup_append_option">Append</label> \
+                              <input id="append_option" type="radio" name="insertionStrategy" value="append" checked />\
+                              <label for="append_option">Append</label> \
                             </p>\
                             <p class="options">\
-                              <input id="lineup_owrite_option" type="radio" name="inputStyle" value="overwrite" />\
-                              <label for="lineup_owrite_option">Overwrite</label> \
+                              <input id="overwrite_option" type="radio" name="insertionStrategy" value="overwrite" />\
+                              <label for="overwrite_option">Overwrite</label> \
                             </p>\
                             <p class="form-footer">\
                             <input id="lineup_submit" class="submit button" type="button"\
@@ -79,48 +92,49 @@ var Lineup = {
                             </p>\
                          </div>');
 
-    artistList.prepend(html);
+    SongkickDOM.artistsFormField().prepend(html);
     $('#lineup_submit').click(this.submitHandler);
     $('#done_submit').click(this.doneHandler);
   },
 
   submitHandler : function () {
-    var userArtists     = InputParser.toArray({}),
-        songkickArtists = $("ul.artists input"),
-        inputStyle      = $("input[name='inputStyle']:checked").val(),
+    var userArtists = InputParser.toArray({}),
+        inputFields = SongkickDOM.artistTextInputs(),
+        insertionStrategy = $("input[name='insertionStrategy']:checked").val(),
         i, takenSpaces = 0, availableSpaces = 0;
 
-    switch (inputStyle) {
+    switch (insertionStrategy) {
     case 'append':
-      for (i = 0; i < songkickArtists.length; i = i + 1) {
-        if ($(songkickArtists[i]).val() !== '') {
+      for (i = 0; i < inputFields.length; i = i + 1) {
+        if ($(inputFields[i]).val() !== '') {
           takenSpaces += 1;
         }
       }
 
-      availableSpaces = songkickArtists.length - takenSpaces;
+      availableSpaces = inputFields.length - takenSpaces;
       while (availableSpaces < userArtists.length) {
-        $("#more_headliners").trigger('click');
-        songkickArtists = $("dd.artist input");
-        availableSpaces += 15;
+        SongkickDOM.addMoreButton().trigger('click');
+        inputFields = SongkickDOM.artistTextInputs();
+        //figure out how many spaces the Add More button added
+        availableSpaces += (inputFields.length - (takenSpaces + availableSpaces));
       }
 
       for (i = 0; i < userArtists.length; i = i + 1) {
-        $(songkickArtists[takenSpaces + i]).val(userArtists[i]);
+        $(inputFields[takenSpaces + i]).val(userArtists[i]);
       }
       break;
     case 'overwrite':
-      //keep adding inputs until your artists fit!
-      while (songkickArtists.length < userArtists.length) {
-        $("#more_headliners").trigger('click');
-        songkickArtists = $("dd.artist input");
+      // Click "Add more" until all the artists will fit
+      while (inputFields.length < userArtists.length) {
+        SongkickDOM.addMoreButton().trigger('click');
+        inputFields = SongkickDOM.artistTextInputs();
       }
 
-      for (i = 0; i < songkickArtists.length; i = i + 1) {
+      for (i = 0; i < inputFields.length; i = i + 1) {
         if (i < userArtists.length) {
-          $(songkickArtists[i]).val(userArtists[i]);
+          $(inputFields[i]).val(userArtists[i]);
         } else {
-          $(songkickArtists[i]).val('');
+          $(inputFields[i]).val('');
         }
       }
       break;
